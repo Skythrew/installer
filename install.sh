@@ -45,13 +45,18 @@ fdisk -l
 
 read "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
 
-echo "Stock Linux will be installed in $DISK_TO_INTALL"
+echo "Stock Linux will be installed in $DISK_TO_INTALL. Ctrl+C to quit."
 
-mount /dev/$DISK_TO_INSTALL /mnt
+cfdisk /dev/$DISK_TO_INSTALL
+
+read "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
+read "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
+
+mount /dev/$ROOT_PARTITION /mnt
 
 export LFS="/mnt"
 
-cd ${LFS}
+cd $LFS
 
 wget http://stocklinux.hopto.org:8080/releases/lfs-temp-tools-r11.1-154-systemd+.tar.xz
 
@@ -183,7 +188,7 @@ rm /usr/lib/libbfd.a && rm /usr/lib/libbfd.la
 
 read "What is the name of the user ? " USERNAME
 
-useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
+useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME    # Admin access user
 passwd $USERNAME
 
 read "Installation finished ! Press [Enter] to reboot"
