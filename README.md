@@ -1,2 +1,1 @@
-# installer
-Installator for Stock Linux
+All things related to the installation of Stock Linux.
