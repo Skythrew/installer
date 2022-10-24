@@ -176,6 +176,9 @@ sleep 3
 
 nano -w /etc/fstab
 
+umount /dev/$ROOT_PARTITION
+mount /dev/$UEFI_PARTITION /mnt
+
 squirrel get grub-efi
 
 grub-install --target=x86_64-efi --efi-directory=/mnt
