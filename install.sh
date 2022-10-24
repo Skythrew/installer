@@ -171,10 +171,10 @@ squirrel get dhcpcd
 
 squirrel get wpasupplicant
 
-echo "Now, follow a guide to write the fstab"
-sleep 3
-
-nano -w /etc/fstab
+UUID="$(blkid $ROOT_PARTITION -o value -s UUID)"
+echo "UUID=${UUID}    /    ext4    defaults,noatime           0 1" >> /etc/fstab
+UUID="$(blkid $BOOT_PARTITION_UEFI -o value -s UUID)"
+echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> /etc/fstab
 
 umount /dev/$ROOT_PARTITION
 mount /dev/$UEFI_PARTITION /mnt
