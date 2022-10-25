@@ -302,6 +302,5 @@ echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
 umount -R /dev/$ROOT_PARTITION
 
-echo "Installation finished !"
-# read -p "Installation finished ! Press [Enter] to reboot"
-# shutdown -r now
+read -p "Installation finished ! Press [Enter] to reboot"
+shutdown -r now
