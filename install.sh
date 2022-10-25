@@ -293,14 +293,15 @@ EOF
 echo "export \$(dbus-launch)" >> $LFS/etc/profile
 
 UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
-
 echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
-
 UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
-
 echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
+
+git clone https://github.com/Babilinx/dotfiles.git /home/$USERNAME/
+sh /home/$USERNAME/dotfiles/install.sh
 
 umount -R /dev/$ROOT_PARTITION
 
 read -p "Installation finished ! Press [Enter] to reboot"
+
 shutdown -r now
