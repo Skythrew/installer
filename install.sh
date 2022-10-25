@@ -74,51 +74,39 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
-chroot "$LFS" /usr/bin/env -i   \
-    HOME=/root                  \
-    TERM="$TERM"                \
-    PS1='(lfs chroot) \u:\w\$ ' \
-    PATH=/usr/bin:/usr/sbin     \
-    /bin/bash --login
+cat << EOF | chroot $LFS
 
-cd /var/squirrel/repos/local && rm * && touch INDEX && cd /
+mkdir -p /var/squirrel/repos/{local,dist}
+squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd wpasupplicant grub -y
 
-echo """import requests
-r = request.get('http://stocklinux.hopto.org:8080/install.sh')
-file = open('install.sh','wb')
-file.write(r.content)
-file.close
-exit()""" > tmp.py
+read -p "What is the name of the user ? " USERNAME
 
-python3 tmp.py && rm tmp.py
+useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME    # Admin access user
+passwd $USERNAME
 
-squirrel sync && squirrel get squirrel --quiet && bash install.sh
-
-squirrel get linux
-
-squirrel get tzdata
+EOF
 
 # ls /usr/share/zoneinfo/
 
 TZ_CONTINENT=Europe
 TZ_CITY=Paris
 
-ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY /etc/localtime
+ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY $LFS/etc/localtime
 
-read -p "Wich keymap do you wanna use ? (ex: fr, us, etc)" KEYMAP
+read -p "What keymap do you want to use ? (ex: fr, us, etc)" KEYMAP
 
-cat > /etc/vconsole.conf << "EOF"
+cat > $LFS/etc/vconsole.conf << "EOF"
 KEYMAP=$KEYMAP
 FONT=Lat2-Terminus16
 EOF
 
-read -p "Wich lang do you wanna use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" LANG
+read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" LANG
 
-cat > /etc/locale.conf << "EOF"
+cat > $LFS/etc/locale.conf << "EOF"
 LANG=$LANG
 EOF
 
-cat > /etc/inputrc << "EOF"
+cat > $LFS/etc/inputrc << "EOF"
 
 set horizontal-scroll-mode Off
 set meta-flag On
@@ -140,14 +128,14 @@ set bell-style none
 "\e[F": end-of-line
 EOF
 
-cat > /etc/lsb-release << "EOF"
+cat > $LFS/etc/lsb-release << "EOF"
 DISTRIB_ID="Stock Linux"
 DISTRIB_RELEASE="rolling"
 DISTRIB_CODENAME="stocklinux"
 DISTRIB_DESCRIPTION="Stock Linux: The Real Power-User Experience"
 EOF
 
-cat > /etc/os-release << "EOF"
+cat > $LFS/etc/os-release << "EOF"
 NAME="Stock Linux"
 VERSION="rolling"
 ID=stocklinux
@@ -157,42 +145,35 @@ EOF
 
 read -p "Choose your hostname (only A-B, a-b, 0-9, -)" HOSTNAME
 
-hostnamectl hostname $HOSTNAME
+cat > $LFS/etc/hostname << "EOF"
+$HOSTNAME
+EOF
 
-cat > /etc/shells << "EOF"
+cat > $LFS/etc/shells << "EOF"
 /bin/sh
 /bin/bash
 EOF
 
-echo "export $(dbus-launch)" >> /etc/profile
-
-squirrel get dhcpcd
-
-squirrel get wpasupplicant
+echo "export $(dbus-launch)" >> $LFS/etc/profile
 
 UUID="$(blkid $ROOT_PARTITION -o value -s UUID)"
-echo "UUID=${UUID}    /    ext4    defaults,noatime           0 1" >> /etc/fstab
+echo "UUID=${UUID}    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
 UUID="$(blkid $BOOT_PARTITION_UEFI -o value -s UUID)"
-echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> /etc/fstab
+echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-umount /dev/$ROOT_PARTITION
-mount /dev/$UEFI_PARTITION /mnt
+# umount /dev/$ROOT_PARTITION
+# mount /dev/$UEFI_PARTITION /mnt
 
-squirrel get grub-efi
+# squirrel get grub-efi
 
-grub-install --target=x86_64-efi --efi-directory=/mnt
+# grub-install --target=x86_64-efi --efi-directory=/mnt
 
-squirrel get dracut && dracut --kver=5.19.0
+# squirrel get dracut && dracut --kver=5.19.0
 
-grub-mkconfig -o /boot/grub/grub.cfg
+# grub-mkconfig -o /boot/grub/grub.cfg
 
-rm /usr/lib/libbfd.a && rm /usr/lib/libbfd.la
+echo "Installation finished !"
 
-read -p "What is the name of the user ? " USERNAME
+# read -p "Installation finished ! Press [Enter] to reboot"
 
-useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME    # Admin access user
-passwd $USERNAME
-
-read -p "Installation finished ! Press [Enter] to reboot"
-
-shutdown -r now
+# shutdown -r now
