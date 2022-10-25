@@ -81,8 +81,8 @@ squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc fle
 
 read -p "What is the name of the user ? " USERNAME
 
-useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME    # Admin access user
-passwd $USERNAME
+useradd -m -G users,wheel,audio,video,sudo -s /bin/bash "$USERNAME"    # Admin access user
+passwd "$USERNAME"
 
 EOF
 
