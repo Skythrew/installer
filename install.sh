@@ -234,7 +234,7 @@ ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY $LFS/etc/localtime
 
 read -p "What keymap do you want to use ? (ex: fr, us, etc)" CHROOT_KEYMAP
 
-echo "KEYMAP=$KEYMAP" > $LFS/etc/vconsole.conf
+echo "KEYMAP=$CHROOT_KEYMAP" > $LFS/etc/vconsole.conf
 
 cat >> $LFS/etc/vconsole.conf << "EOF"
 FONT=Lat2-Terminus16
