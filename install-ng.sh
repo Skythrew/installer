@@ -213,12 +213,12 @@ EOF
 
 read -p "Set the password of $USERNAME " PASSWD
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo "$PASSWD" | passwd $USERNAME --stdin
+echo "$USERNAME:$PASSWD" | chpasswd
 EOF
 
 read -p "Set the password of root " PASSWD_ROOT
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo "$PASSWD_ROOT" | passwd root --stdin
+echo "root:$PASSWD_ROOT" | chpasswd
 cd /boot
 dracut --kver=$(ls /lib/modules)
 mv initramfs* initramfs-$(ls /lib/modules)-stocklinux.img
