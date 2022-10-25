@@ -10,7 +10,7 @@
 #
 # BUGS : ---
 # NOTES : ---
-# CONTRUBUTORS : Babilinx, Chevek, Crystal, Wamuu
+# CONTRUBUTORS : Skythrew, Babilinx
 # CREATED : october 2022
 # REVISION: 23 october 2022
 #
