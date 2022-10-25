@@ -232,16 +232,17 @@ TZ_CONTINENT=Europe
 TZ_CITY=Paris
 ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY $LFS/etc/localtime
 
-read -p "What keymap do you want to use ? (ex: fr, us, etc)" KEYMAP
+read -p "What keymap do you want to use ? (ex: fr, us, etc)" CHROOT_KEYMAP
 
-cat > $LFS/etc/vconsole.conf << "EOF"
-KEYMAP=$KEYMAP
+echo "KEYMAP=$KEYMAP" > $LFS/etc/vconsole.conf
+
+cat >> $LFS/etc/vconsole.conf << "EOF"
 FONT=Lat2-Terminus16
 EOF
 
-read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" LANG
-cat > $LFS/etc/locale.conf << "EOF"
-LANG=$LANG
+read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" CHROOT_LANG
+echo "LANG=$CHROOT_LANG" > $LFS/etc/locale.conf << "EOF"
+
 EOF
 
 cat > $LFS/etc/inputrc << "EOF"
@@ -295,7 +296,7 @@ UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
 
 echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
 
-UUID="$(blkid /dev/$BOOT_PARTITION_UEFI -o value -s UUID)"
+UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
 
 echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
