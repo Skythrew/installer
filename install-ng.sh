@@ -102,7 +102,7 @@ mount -v --bind /dev $LFS/dev
 mount -v --bind /dev/pts $LFS/dev/pts
 mount -vt proc proc $LFS/proc
 mount --rbind /sys $LFS/sys
-mount --make-rslave /sys $LFS/sys
+mount --make-rslave $LFS/sys
 mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
