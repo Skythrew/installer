@@ -301,7 +301,7 @@ UUID="$(blkid $BOOT_PARTITION_UEFI -o value -s UUID)"
 
 echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-umount /dev/$ROOT_PARTITION
+umount -R /dev/$ROOT_PARTITION
 
 echo "Installation finished !"
 # read -p "Installation finished ! Press [Enter] to reboot"
