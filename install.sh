@@ -42,10 +42,7 @@ This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
 echo "Installing squirrel on the host system..."
-git clone https://github.com/stock-linux/squirrel.git
-cd squirrel
-git branch 1.0.2-dev
-cd ..
+git clone --branch 1.0.2-dev https://github.com/stock-linux/squirrel.git
 ln -s squirrel/squirrel /bin/
 
 echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py $@" | tee squirrel/squirrel
