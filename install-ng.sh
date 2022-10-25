@@ -93,7 +93,7 @@ ln -s usr/lib $LFS/lib64
 ln -s lib $LFS/usr/lib64
 
 echo "Installing a basic system to chroot into..."
-ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux --chroot=$LFS -y 
+ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux squirrel --chroot=$LFS -y 
 
 echo "Installing the system, it can take a while !"
 
