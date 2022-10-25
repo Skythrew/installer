@@ -43,7 +43,7 @@ echo "Installing squirrel on the host system..."
 git clone --branch 1.0.2-dev https://github.com/stock-linux/squirrel.git
 ln -s $PWD/squirrel/squirrel /bin/squirrel
 
-echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py $@" > squirrel/squirrel
+echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py \$@" > squirrel/squirrel
 pip3 install docopt pyaml requests
 
 mkdir -p $PWD/squirrel/dev/etc/squirrel/ $PWD/squirrel/dev/var/squirrel/repos/dist/ $PWD/squirrel/dev/var/squirrel/repos/local/ $PWD/squirrel/dev/var/squirrel/repos/local/main/
