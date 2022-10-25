@@ -282,9 +282,7 @@ EOF
 
 read -p "Choose your hostname (only A-B, a-b, 0-9, -)" CHROOT_HOSTNAME
 
-cat > $LFS/etc/hostname << "EOF"
-$CHROOT_HOSTNAME
-EOF
+echo $CHROOT_HOSTNAME > $LFS/etc/hostname
 
 cat > $LFS/etc/shells << "EOF"
 /bin/sh
