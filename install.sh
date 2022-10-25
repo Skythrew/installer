@@ -43,14 +43,14 @@ We are not responsable for enything that can appears pending the installation (d
 
 fdisk -l
 
-read "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
+read -p "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
 
 echo "Stock Linux will be installed in $DISK_TO_INTALL. Ctrl+C to quit."
 
 cfdisk /dev/$DISK_TO_INSTALL
 
-read "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
-read "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
+read -p "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
+read -p "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
 
 mount /dev/$ROOT_PARTITION /mnt
 
@@ -105,14 +105,14 @@ TZ_CITY=Paris
 
 ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY /etc/localtime
 
-read "Wich keymap do you wanna use ? (ex: fr, us, etc)" KEYMAP
+read -p "Wich keymap do you wanna use ? (ex: fr, us, etc)" KEYMAP
 
 cat > /etc/vconsole.conf << "EOF"
 KEYMAP=$KEYMAP
 FONT=Lat2-Terminus16
 EOF
 
-read "Wich lang do you wanna use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" LANG
+read -p "Wich lang do you wanna use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" LANG
 
 cat > /etc/locale.conf << "EOF"
 LANG=$LANG
@@ -155,7 +155,7 @@ PRETTY_NAME="Stock Linux rolling"
 VERSION_CODENAME="rolling"
 EOF
 
-read "Choose your hostname (only A-B, a-b, 0-9, -)" HOSTNAME
+read -p "Choose your hostname (only A-B, a-b, 0-9, -)" HOSTNAME
 
 hostnamectl hostname $HOSTNAME
 
@@ -188,11 +188,11 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 rm /usr/lib/libbfd.a && rm /usr/lib/libbfd.la
 
-read "What is the name of the user ? " USERNAME
+read -p "What is the name of the user ? " USERNAME
 
 useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME    # Admin access user
 passwd $USERNAME
 
-read "Installation finished ! Press [Enter] to reboot"
+read -p "Installation finished ! Press [Enter] to reboot"
 
 shutdown -r now
