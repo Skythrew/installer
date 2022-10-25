@@ -42,12 +42,12 @@ echo "Installing squirrel on the host system..."
 git clone --branch 1.0.2-dev https://github.com/stock-linux/squirrel.git
 ln -s squirrel/squirrel /bin/
 echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py $@" | tee squirrel/squirrel
-pip3 install docopt pyaml requests tempfile
+pip3 install docopt pyaml requests
 mkdir -p $PWD/squirrel/dev/etc/squirrel/ $PWD/squirrel/dev/var/squirrel/repos/dist/ $PWD/squirrel/dev/var/squirrel/repos/local/ $PWD/squirrel/dev/var/squirrel/repos/local/main/
 echo "configPath = '$PWD/squirrel/dev/etc/squirrel/'" > tee squirrel/utils/config.py
-echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> tee -a squirrel/utils/config.py
-echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> tee -a squirrel/utils/config.py
-echo "main http://stocklinux.hopto.org:8080/main/main" > tee squirrel/dev/etc/squirrel/branches
+echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> squirrel/utils/config.py
+echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> squirrel/utils/config.py
+echo "main http://stocklinux.hopto.org:8080/main/main" > squirrel/dev/etc/squirrel/branches
 touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
 echo "Everything is configured !"
 fdisk -l
