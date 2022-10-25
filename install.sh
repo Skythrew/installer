@@ -41,6 +41,29 @@ echo """${COLOR_YELLOW}Dragons ahead !
 This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
+echo "Installing squirrel on the host system..."
+git clone https://github.com/stock-linux/squirrel.git
+cd squirrel
+git branch 1.0.2-dev
+cd ..
+ln -s squirrel/squirrel /bin/
+
+echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py $@" | tee squirrel/squirrel
+
+pip3 install docopt pyaml requests tempfile
+
+mkdir -p $PWD/squirrel/dev/etc/squirrel/ $PWD/squirrel/dev/var/squirrel/repos/dist/ $PWD/squirrel/dev/var/squirrel/repos/local/ $PWD/squirrel/dev/var/squirrel/repos/local/main/
+
+echo "configPath = '$PWD/squirrel/dev/etc/squirrel/'" | tee squirrel/utils/config.py
+echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" | tee -a squirrel/utils/config.py
+echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" | tee -a squirrel/utils/config.py
+
+echo "main http://stocklinux.hopto.org:8080/main/main" | tee squirrel/dev/etc/squirrel/branches
+
+touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
+
+echo "Everything is configured !"
+
 fdisk -l
 
 read -p "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
