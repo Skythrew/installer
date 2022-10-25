@@ -71,10 +71,19 @@ cd $LFS
 
 touch $LFS/INDEX
 
+mkdir -p $LFS/{dev,dev/pts,proc,sys,run,tmp, bin, etc, var, usr, usr/bin, usr/sbin, usr/lib, boot, usr/share, usr/include, usr/libexec}
+
+ln -s usr/bin $LFS/bin
+ln -s usr/lib $LFS/lib
+ln -s usr/sbin $LFS/sbin
+ln -s usr/lib $LFS/lib64
+ln -s lib $LFS/usr/lib64
+
 echo "Installing a basic system to chroot into..."
 ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux --chroot=$LFS -y 
 
 echo "Installing the system, it can take a while !"
+
 
 mount -v --bind /dev $LFS/dev
 mount -v --bind /dev/pts $LFS/dev/pts
