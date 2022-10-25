@@ -208,7 +208,7 @@ EOF
 read -p "What is the name of the user ? " USERNAME
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME
+useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
 EOF
 
 read -p "Set the password of $USERNAME " PASSWD
