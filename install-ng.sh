@@ -210,7 +210,7 @@ passwd "$USERNAME"
 echo "Set the root password !"
 passwd root
 cd /boot
-dracut
+dracut --kver=$(ls /lib/modules)
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
 grub-mkconfig -o /boot/grub/grub.cfg
