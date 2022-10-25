@@ -213,14 +213,14 @@ EOF
 
 read -p "Set the password of $USERNAME " PASSWD
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo "$USERNAME:$PASSWD" | chpasswd
+echo -e "$PASSWD\n$PASSWD" | passwd $USERNAME
 EOF
 
 read -p "Set the password of root " PASSWD_ROOT
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo "root:$PASSWD_ROOT" | chpasswd
+echo -e "$PASSWD_ROOT\n$PASSWD_ROOT" | passwd root
 cd /boot
-dracut --kver=$(ls /lib/modules)
+dracut --kver=\$(ls /lib/modules)
 mv initramfs* initramfs-$(ls /lib/modules)-stocklinux.img
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
