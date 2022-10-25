@@ -69,6 +69,7 @@ mount /dev/$ROOT_PARTITION /mnt
 export LFS="/mnt"
 cd $LFS
 
+# Create the distro structure
 touch $LFS/INDEX
 
 mkdir -p $LFS/dev/pts
@@ -97,7 +98,11 @@ ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses b
 
 echo "Installing the system, it can take a while !"
 
+# Create the DNS configuration
+echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
+echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
+# Mount temporary filesystems
 mount -v --bind /dev $LFS/dev
 mount -v --bind /dev/pts $LFS/dev/pts
 mount -vt proc proc $LFS/proc
@@ -108,6 +113,7 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
+# Chroot in the system
 cat << EOF | chroot $LFS /bin/sh
 mkdir -p /var/squirrel/repos/{local,dist}
 squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd dracut wpasupplicant grub -y
