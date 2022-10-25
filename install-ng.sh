@@ -204,13 +204,24 @@ mkdir -p /var/squirrel/repos/{local,dist}
 squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd dracut wpasupplicant grub -y
 pwconv
 grpconv
+EOF
 read -p "What is the name of the user ? " USERNAME
-useradd -m -G users,wheel,audio,video,sudo -s /bin/bash "\$USERNAME"
-passwd "$USERNAME"
-echo "Set the root password !"
-passwd root
+
+cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $USERNAME
+EOF
+
+read -p "Set the password of $USERNAME " PASSWD
+cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+echo "$PASSWD" | passwd $USERNAME --stdin
+EOF
+
+read -p "Set the password of root " PASSWD_ROOT
+cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+echo "$PASSWD_ROOT" | passwd root --stdin
 cd /boot
 dracut --kver=$(ls /lib/modules)
+mv initramfs* initramfs-$(ls /lib/modules)-stocklinux.img
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
 grub-mkconfig -o /boot/grub/grub.cfg
