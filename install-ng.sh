@@ -295,11 +295,11 @@ echo "export \$(dbus-launch)" >> $LFS/etc/profile
 
 UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
 
-echo "UUID=${UUID}    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
+echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
 
 UUID="$(blkid /dev/$BOOT_PARTITION_UEFI -o value -s UUID)"
 
-echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
+echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
 umount -R /dev/$ROOT_PARTITION
 
