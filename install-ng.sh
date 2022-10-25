@@ -71,7 +71,7 @@ cd $LFS
 
 touch $LFS/INDEX
 
-mkdir -p $LFS/{dev,dev/pts,proc,sys,run,tmp, bin, etc, var, usr, usr/bin, usr/sbin, usr/lib, boot, usr/share, usr/include, usr/libexec}
+mkdir -p $LFS/{dev, dev/pts, proc, sys, run, tmp, bin, etc, var, usr, usr/bin, usr/sbin, usr/lib, boot, usr/share, usr/include, usr/libexec}
 
 ln -s usr/bin $LFS/bin
 ln -s usr/lib $LFS/lib
