@@ -77,12 +77,25 @@ fi
 cat << EOF | chroot $LFS
 
 mkdir -p /var/squirrel/repos/{local,dist}
-squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd wpasupplicant grub -y
+squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd dracut wpasupplicant grub -y
+
+pwconv
+grpconv
 
 read -p "What is the name of the user ? " USERNAME
 
 useradd -m -G users,wheel,audio,video,sudo -s /bin/bash "$USERNAME"    # Admin access user
 passwd "$USERNAME"
+
+echo "Set the root password !"
+passwd root
+
+cd /boot
+dracut
+mount /dev/$UEFI_PARTITION /mnt
+
+grub-install --target=x86_64-efi --efi-directory=/mnt
+grub-mkconfig -o /boot/grub/grub.cfg
 
 EOF
 
@@ -161,16 +174,7 @@ echo "UUID=${UUID}    /    ext4    defaults,noatime           0 1" >> $LFS/etc/f
 UUID="$(blkid $BOOT_PARTITION_UEFI -o value -s UUID)"
 echo "UUID=${UUID}    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-# umount /dev/$ROOT_PARTITION
-# mount /dev/$UEFI_PARTITION /mnt
-
-# squirrel get grub-efi
-
-# grub-install --target=x86_64-efi --efi-directory=/mnt
-
-# squirrel get dracut && dracut --kver=5.19.0
-
-# grub-mkconfig -o /boot/grub/grub.cfg
+umount /dev/$ROOT_PARTITION
 
 echo "Installation finished !"
 
