@@ -221,7 +221,7 @@ cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chr
 echo -e "$PASSWD_ROOT\n$PASSWD_ROOT" | passwd root
 cd /boot
 dracut --kver=\$(ls /lib/modules)
-mv initramfs* initramfs-$(ls /lib/modules)-stocklinux.img
+mv initramfs* initramfs-\$(ls /lib/modules)-stocklinux.img
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -280,10 +280,10 @@ PRETTY_NAME="Stock Linux rolling"
 VERSION_CODENAME="rolling"
 EOF
 
-read -p "Choose your hostname (only A-B, a-b, 0-9, -)" HOSTNAME
+read -p "Choose your hostname (only A-B, a-b, 0-9, -)" CHROOT_HOSTNAME
 
 cat > $LFS/etc/hostname << "EOF"
-$HOSTNAME
+$CHROOT_HOSTNAME
 EOF
 
 cat > $LFS/etc/shells << "EOF"
@@ -291,7 +291,7 @@ cat > $LFS/etc/shells << "EOF"
 /bin/bash
 EOF
 
-echo "export $(dbus-launch)" >> $LFS/etc/profile
+echo "export \$(dbus-launch)" >> $LFS/etc/profile
 
 UUID="$(blkid $ROOT_PARTITION -o value -s UUID)"
 
