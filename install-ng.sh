@@ -69,6 +69,8 @@ mount /dev/$ROOT_PARTITION /mnt
 export LFS="/mnt"
 cd $LFS
 
+touch $LFS/INDEX
+
 echo "Installing a basic system to chroot into..."
 ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux --chroot=$LFS -y 
 
@@ -84,7 +86,7 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
-cat << EOF | chroot $LFS
+cat << EOF | chroot $LFS /bin/sh
 mkdir -p /var/squirrel/repos/{local,dist}
 squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs tzdata linux dhcpcd dracut wpasupplicant grub -y
 pwconv
