@@ -64,6 +64,10 @@ echo "Stock Linux will be installed in $DISK_TO_INTALL. Ctrl+C to quit."
 cfdisk /dev/$DISK_TO_INSTALL
 read -p "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
 read -p "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
+
+mkfs.ext4 /dev/$ROOT_PARTITION
+mkfs.fat -F 32 /dev/$UEFI_PARTITION
+
 mount /dev/$ROOT_PARTITION /mnt
 
 export LFS="/mnt"
