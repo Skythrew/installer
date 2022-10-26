@@ -40,7 +40,7 @@ This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
 echo "Installing squirrel on the host system..."
-git clone --branch 1.0.2-dev https://github.com/stock-linux/squirrel.git
+git clone --branch 1.0.2 https://github.com/stock-linux/squirrel.git
 ln -s $PWD/squirrel/squirrel /bin/squirrel
 
 echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py \$@" > squirrel/squirrel
@@ -56,7 +56,9 @@ touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
 
 echo "Everything is configured !"
 
-fdisk -l
+echo "Disks:"
+lsblk -d -o NAME,SIZE
+echo "\n"
 
 read -p "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
 
@@ -215,12 +217,12 @@ cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chr
 useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
 EOF
 
-read -p "Set the password of $USERNAME " PASSWD
+read -p "Set the password of $USERNAME: " PASSWD
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 echo -e "$PASSWD\n$PASSWD" | passwd $USERNAME
 EOF
 
-read -p "Set the password of root " PASSWD_ROOT
+read -p "Set the password of root: " PASSWD_ROOT
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 echo -e "$PASSWD_ROOT\n$PASSWD_ROOT" | passwd root
 cd /boot
