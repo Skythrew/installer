@@ -11,7 +11,7 @@
 # NOTES : ---
 # CONTRUBUTORS : Skythrew, Babilinx
 # CREATED : october 2022
-# REVISION: 25 october 2022
+# REVISION: 26 october 2022
 #
 # LICENCE :
 # Copyright (C) 2022 Skythrew, Babilinx
@@ -239,7 +239,7 @@ TZ_CONTINENT=Europe
 TZ_CITY=Paris
 ln -s /usr/share/zoneinfo/$TZ_CONTINENT/$TZ_CITY $LFS/etc/localtime
 
-read -p "What keymap do you want to use ? (ex: fr, us, etc)" CHROOT_KEYMAP
+read -p "What keymap do you want to use ? (ex: fr, us, etc) " CHROOT_KEYMAP
 
 echo "KEYMAP=$CHROOT_KEYMAP" > $LFS/etc/vconsole.conf
 
@@ -247,7 +247,7 @@ cat >> $LFS/etc/vconsole.conf << "EOF"
 FONT=Lat2-Terminus16
 EOF
 
-read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc)" CHROOT_LANG
+read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc) " CHROOT_LANG
 echo "LANG=$CHROOT_LANG" > $LFS/etc/locale.conf << "EOF"
 
 EOF
@@ -288,7 +288,7 @@ PRETTY_NAME="Stock Linux rolling"
 VERSION_CODENAME="rolling"
 EOF
 
-read -p "Choose your hostname (only A-B, a-b, 0-9, -)" CHROOT_HOSTNAME
+read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
 
 echo $CHROOT_HOSTNAME > $LFS/etc/hostname
 
