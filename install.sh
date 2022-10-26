@@ -51,7 +51,7 @@ mkdir -p $PWD/squirrel/dev/etc/squirrel/ $PWD/squirrel/dev/var/squirrel/repos/di
 echo "configPath = '$PWD/squirrel/dev/etc/squirrel/'" > squirrel/utils/config.py
 echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> squirrel/utils/config.py
 echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> squirrel/utils/config.py
-echo "main http://stocklinux.hopto.org:8080/main/main" > squirrel/dev/etc/squirrel/branches
+echo "main http://stocklinux.hopto.org:8080/43w22/main" > squirrel/dev/etc/squirrel/branches
 touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
 
 echo "Everything is configured !"
