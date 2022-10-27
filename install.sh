@@ -47,14 +47,14 @@ IS_HOSTNAME_VALID=0
 
 test_if_hostname_is_valid()
 {
-  if [ ${#CHROOT_HOSTNAME} -le 255 ]; then                                                                                                                                                                                                # Tot>
+  if [ ${#CHROOT_HOSTNAME} -le 255 ]; then
     if [[ "$CHROOT_HOSTNAME" =~ $VALID_HOSTNAME_REGEX ]]; then
-      IS_HOSTNAME_VALID=1                                                                                                                                                                                                          >
-    else
-      IS_HOSTNAME_VALID=0                                                                                                                                                                                                          >
+		IS_HOSTNAME_VALID=1
+	else
+		IS_HOSTNAME_VALID=0
     fi
   else
-    IS_HOSTNAME_VALID=0                                                                                                                                                                                                          >
+    IS_HOSTNAME_VALID=0
   fi
 }
 
