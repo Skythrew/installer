@@ -74,7 +74,7 @@ verify_password_concordance()
     echo "${COLOR_YELLOW}The passwords dosn't match. Try again.${COLOR_RESET}"
     create_passwd
 	done
-  PASSWD=ATTEMPT1
+  PASSWD=$ATTEMPT1
 }
 
 
