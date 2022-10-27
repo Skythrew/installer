@@ -273,7 +273,7 @@ create_passwd "root"
 verify_password_concordance
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo -e "$PASSWD_ROOT\n$PASSWD_ROOT" | passwd root
+echo -e "$PASSWD\n$PASSWD" | passwd root
 cd /boot
 dracut --kver=\$(ls /lib/modules)
 mv initramfs* initramfs-\$(ls /lib/modules)-stocklinux.img
