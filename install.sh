@@ -304,8 +304,8 @@ echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fst
 UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
 echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-git clone https://github.com/Babilinx/dotfiles.git /home/$USERNAME/
-sh /home/$USERNAME/dotfiles/install.sh
+git clone https://github.com/stock-linux/dotfiles.git $LFS/home/$USERNAME/
+sh $LFS/home/$USERNAME/dotfiles/install.sh
 
 umount -R /dev/$ROOT_PARTITION
 
