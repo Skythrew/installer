@@ -31,6 +31,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
+
 COLOR_YELLOW=$'\033[0;33m'
 COLOR_GREEN=$'\033[0;32m'
 COLOR_RED=$'\033[0;31m'
@@ -39,6 +40,26 @@ COLOR_WHITE=$'\033[1;37m'
 COLOR_LIGHTGREY=$'\e[37m'
 COLOR_RESET=$'\033[0m'
 C_RESET=$'\e[0m'
+
+VALID_HOSTNAME_REGEX="^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$"
+
+IS_HOSTNAME_VALID=0
+
+test_if_hostname_is_valid()
+{
+  if [ ${#CHROOT_HOSTNAME} -le 255 ]; then                                                                                                                                                                                                # Tot>
+    if [[ "$CHROOT_HOSTNAME" =~ $VALID_HOSTNAME_REGEX ]]; then
+      IS_HOSTNAME_VALID=1                                                                                                                                                                                                          >
+    else
+      IS_HOSTNAME_VALID=0                                                                                                                                                                                                          >
+    fi
+  else
+    IS_HOSTNAME_VALID=0                                                                                                                                                                                                          >
+  fi
+}
+
+
+
 
 echo "Welcome into the installation script of Stock Linux"
 echo """${COLOR_YELLOW}Dragons ahead !
@@ -294,7 +315,13 @@ PRETTY_NAME="Stock Linux rolling"
 VERSION_CODENAME="rolling"
 EOF
 
-read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
+while  [ $IS_HOSTNAME_VALID = 0 ]; do
+  read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
+  test_if_hostname_is_valid
+  if [ $IS_HOSTNAME_VALID = 0 ]; then
+    echo "${COLOR_YELLOW}Hostname : $CHROOT_HOSTNAME is not valid. Try again.${COLOR_RESET}"
+  fi
+done
 
 echo $CHROOT_HOSTNAME > $LFS/etc/hostname
 
