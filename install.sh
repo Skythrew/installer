@@ -25,6 +25,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see https://www.gnu.org/licenses/.
 #===================================================================================
+
+if [ "$EUID" -ne 0 ]
+  then echo "The script needs root rights"
+  exit
+fi
+
 COLOR_YELLOW=$'\033[0;33m'
 COLOR_GREEN=$'\033[0;32m'
 COLOR_RED=$'\033[0;31m'
