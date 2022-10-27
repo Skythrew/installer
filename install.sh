@@ -59,6 +59,23 @@ test_if_hostname_is_valid()
 }
 
 
+create_passwd()
+{
+  echo "Create password for $1 :"
+   read -s ATTEMPT1
+	echo "Retype password :"
+   read -s ATTEMPT2
+}
+
+
+verify_password_concordance()
+{
+  while [[ "$ATTEMPT1" != "$ATTEMPT2" ]]; do
+    echo "${COLOR_YELLOW}The passwords dosn't match. Try again.${COLOR_RESET}"
+    create_passwd
+	done
+  PASSWD=ATTEMPT1
+}
 
 
 echo "Welcome into the installation script of Stock Linux"
@@ -245,12 +262,16 @@ cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chr
 useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
 EOF
 
-read -p "Set the password of $USERNAME: " PASSWD
+create_passwd $USERNAME
+verify_password_concordance
+
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 echo -e "$PASSWD\n$PASSWD" | passwd $USERNAME
 EOF
 
-read -p "Set the password of root: " PASSWD_ROOT
+create_passwd "root"
+verify_password_concordance
+
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 echo -e "$PASSWD_ROOT\n$PASSWD_ROOT" | passwd root
 cd /boot
