@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #===================================================================================
 #
 # FILE : install.sh
@@ -98,9 +100,9 @@ echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> squirrel/utils
 echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> squirrel/utils/config.py
 
 echo "main http://stocklinux.hopto.org:8080/45w22/main" > squirrel/dev/etc/squirrel/branches
-echo "cli http://stocklinux.hopto.org:8080/45w22/cli" > squirrel/dev/etc/squirrel/branches
-echo "gui http://stocklinux.hopto.org:8080/45w22/gui" > squirrel/dev/etc/squirrel/branches
-echo "extra http://stocklinux.hopto.org:8080/45w22/extra" > squirrel/dev/etc/squirrel/branches
+echo "cli http://stocklinux.hopto.org:8080/45w22/cli" >> squirrel/dev/etc/squirrel/branches
+echo "gui http://stocklinux.hopto.org:8080/45w22/gui" >> squirrel/dev/etc/squirrel/branches
+echo "extra http://stocklinux.hopto.org:8080/45w22/extra" >> squirrel/dev/etc/squirrel/branches
 
 touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
 
