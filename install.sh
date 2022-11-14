@@ -273,6 +273,7 @@ read -p "What is the name of the user ? " USERNAME
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
+chown -R $USERNAME:$USERNAME /home/$USERNAME
 EOF
 
 create_passwd $USERNAME
@@ -370,8 +371,6 @@ UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
 echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
 UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
 echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
-
-chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 umount -R /dev/$ROOT_PARTITION
 
