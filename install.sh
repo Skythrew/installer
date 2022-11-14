@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #===================================================================================
 #
 # FILE : install.sh
@@ -151,14 +150,15 @@ ln -s usr/sbin $LFS/sbin
 ln -s usr/lib $LFS/lib64
 ln -s lib $LFS/usr/lib64
 
-echo "Installing a basic system to chroot into..."
-ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux squirrel --chroot=$LFS -y 
-
-echo "Installing the system, it can take a while !"
 
 # Create the DNS configuration
 echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
 echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
+
+echo "Installing a basic system to chroot into..."
+ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux squirrel --chroot=$LFS -y 
+
+echo "Installing the system, it can take a while !"
 
 # Mount temporary filesystems
 mount -v --bind /dev $LFS/dev
@@ -170,6 +170,12 @@ mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
+
+mkdir -p $LFS/etc/squirrel
+echo "main http://stocklinux.hopto.org:8080/45w22/main" > $LFS/etc/squirrel/branches
+echo "gui http://stocklinux.hopto.org:8080/45w22/gui" >> $LFS/etc/squirrel/branches
+echo "extra http://stocklinux.hopto.org:8080/45w22/extra" >> $LFS/etc/squirrel/branches
+echo "cli http://stocklinux.hopto.org:8080/45w22/cli" >> $LFS/etc/squirrel/branches
 
 # Chroot in the system
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
@@ -365,8 +371,7 @@ echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fst
 UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
 echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-git clone https://github.com/stock-linux/dotfiles.git $LFS/home/$USERNAME/dotfiles/
-sh $LFS/home/$USERNAME/dotfiles/install.sh
+chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 umount -R /dev/$ROOT_PARTITION
 
