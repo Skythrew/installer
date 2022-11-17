@@ -310,9 +310,9 @@ FONT=Lat2-Terminus16
 EOF
 
 read -p "What lang do you want to use ? (ex: fr_FR.UTF-8, en_GB.ISO-8859-1, etc) " CHROOT_LANG
-echo "LANG=$CHROOT_LANG" > $LFS/etc/locale.conf << "EOF"
-
-EOF
+echo "LANG=$CHROOT_LANG" > $LFS/etc/locale.conf
+echo "LC_ALL=$CHROOT_LANG" >> $LFS/etc/environment
+echo "LANG=$CHROOT_LANG" >> $LFS/etc/environment
 
 cat > $LFS/etc/inputrc << "EOF"
 set horizontal-scroll-mode Off
