@@ -22,25 +22,88 @@ then
     exit 1
 fi
 
-echo 'Installation started.'
-echo ''
-echo 'Variables set to:'
-echo 'OSI_LOCALE               ' $OSI_LOCALE
-echo 'OSI_DEVICE_PATH          ' $OSI_DEVICE_PATH
-echo 'OSI_DEVICE_IS_PARTITION  ' $OSI_DEVICE_IS_PARTITION
-echo 'OSI_DEVICE_EFI_PARTITION ' $OSI_DEVICE_EFI_PARTITION
-echo 'OSI_USE_ENCRYPTION       ' $OSI_USE_ENCRYPTION
-echo 'OSI_ENCRYPTION_PIN       ' $OSI_ENCRYPTION_PIN
-echo ''
 
-# Pretending to do something
-echo 'Pretending to do something'
+echo "Installation started!"
 
-for i in {1..20}
-do
-    sleep 1
-    echo -n '.'
-done
+echo "Partitionning the system..."
+
+# Je ne sais pas vraiment ce que je fais là
+if [[ $OSI_DEVICE_IS_PARTITION == 1 ]]; then
+   mkfs.ext4 $OSI_DEVICE_PATH 
+   if [[ -v $OSI_DEVICE_EFI_PARTITION ]]; then
+      mkfs.fat -F 32 
+   fi
+
+else
+   echo "banane"
+fi
+
+echo "Done"
+
+mount #PARTITION_ROOT# /mnt
+
+export LFS="/mnt"
+cd $LFS
+
+echo "Creating the distro structure..."
+# Create the distro structure
+touch $LFS/INDEX
+
+mkdir -p $LFS/dev/pts
+mkdir -p $LFS/proc
+mkdir -p $LFS/sys
+mkdir -p $LFS/run
+mkdir -p $LFS/tmp
+mkdir -p $LFS/etc
+mkdir -p $LFS/var
+mkdir -p $LFS/usr/bin
+mkdir -p $LFS/usr/sbin
+mkdir -p $LFS/usr/lib
+mkdir -p $LFS/usr/share
+mkdir -p $LFS/usr/include
+mkdir -p $LFS/usr/libexec
+mkdir -p $LFS/boot
+
+ln -s usr/bin $LFS/bin
+ln -s usr/lib $LFS/lib
+ln -s usr/sbin $LFS/sbin
+ln -s usr/lib $LFS/lib64
+ln -s lib $LFS/usr/lib64
+
+echo "Done"
+
+echo "Creating the DNS configuration..."
+# Create the DNS configuration
+echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
+echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
+echo "Done"
+
+echo "Installing a basic system to chroot into..."
+ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux squirrel --chroot=$LFS -y 
+echo "Done"
+
+echo
+echo "Installing the system, it can take a while !"
+echo
+
+echo "Mount temporary filesystems..."
+mount -v --bind /dev $LFS/dev
+mount -v --bind /dev/pts $LFS/dev/pts
+mount -vt proc proc $LFS/proc
+mount --rbind /sys $LFS/sys
+mount --make-rslave $LFS/sys
+mount -vt tmpfs tmpfs $LFS/run
+if [ -h $LFS/dev/shm ]; then
+  mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+fi
+echo "Done"
+
+echo "Configuring squirrel..."
+echo "main http://stocklinux.hopto.org:8080/45w22/main" > $LFS/etc/squirrel/branches
+echo "gui http://stocklinux.hopto.org:8080/45w22/gui" >> $LFS/etc/squirrel/branches
+echo "extra http://stocklinux.hopto.org:8080/45w22/extra" >> $LFS/etc/squirrel/branches
+echo "cli http://stocklinux.hopto.org:8080/45w22/cli" >> $LFS/etc/squirrel/branches
+echo "Done"
 
 echo
 echo 'Installation completed.'
