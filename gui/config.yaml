@@ -10,7 +10,7 @@
 
 # Name of the distribution.
 # Default: 'Untitled'
-distribution_name: 'Debuntorarch'
+distribution_name: 'Stock Linux'
 
 # Whether the installation needs an internet connection.
 # Default: yes
@@ -29,14 +29,9 @@ fixed_language: no
 # and the installer needs to have a translation into that language.
 # Default: ['ar', 'de', 'en', 'es', 'fr', 'ja', 'ru', 'zh']
 suggested_languages:
-    - 'ar'
-    - 'de'
     - 'en'
-    - 'es'
     - 'fr'
-    - 'ja'
-    - 'ru'
-    - 'zh'
+
 
 # Show a welcome page after language selection.
 #
@@ -46,18 +41,18 @@ suggested_languages:
 #
 # Default: logo: None, text: None, usage: yes
 welcome_page:
-    logo    : '/your/distribution/logo.png'
-    text    : 'A welcoming text to inform about the installation.'
-    text_de : 'Ein Begrüßungstext, um die Installation zu erklären.'
+    logo    : '/etc/os-installer/icons/stocklinux.png'
+    text    : 'Welcome into the install script of Stock Linux!'
+    text_fr : 'Bienvenue dans le script d'installation de Stock Linux !'
     usage   : yes
 
 # Minimum disk size needed for the installation (in Gigabyte)
 # Default: 5
-minimum_disk_size: 5
+minimum_disk_size: 20
 
 # Whether to offer setting a disk encryption PIN
 # Default: yes
-offer_disk_encryption: yes
+offer_disk_encryption: no
 
 # gnome-initial-setup can handle user and locale setup.
 # These settings allow to disable these pages.
@@ -114,16 +109,12 @@ additional_software:
 #
 # Default: [], suggested: False, description: '', icon_path: no icon
 additional_features:
-    - feature        : 'snapshots'
+    - feature        : 'sappy'
       suggested      : yes
-      name           : 'Snapshots'
-      name_et        : 'Vahepildid'
-      description    : 'Snapshots allow restoring a previous state of your system'
-      description_et : 'Vahepildid võimaldavad taastada teie süsteemi eelmise seisundi'
-      icon_path      : '/etc/os-installer/icons/snapshot.svg'
-    - feature        : 'dummy'
-      name           : 'Dummy'
-      description    : 'This does not do anything'
+      name           : 'Sappy'
+      description    : 'Sappy is a CLI package builder.'
+      description_fr : 'Sappy est un constructeur de packets en CLI.'
+      icon_path      : '/etc/os-installer/icons/sappy.svg'
 
 # Upon failure an option to search for help on the internet is given.
 # The url this leads to can be defined here. The squiggly brackets are
