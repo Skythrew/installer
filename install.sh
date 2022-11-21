@@ -359,7 +359,7 @@ while  [ $IS_HOSTNAME_VALID = 0 ]; do
 done
 
 echo $CHROOT_HOSTNAME > $LFS/etc/hostname
-
+echo 'XDG_DATA_DIRS="/var/lib/flatpak/exports/share:/usr/share"' >> $LFS/etc/environment
 cat > $LFS/etc/shells << "EOF"
 /bin/sh
 /bin/bash
