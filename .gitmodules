@@ -1,0 +1,3 @@
+[submodule "os-installer"]
+	path = os-installer
+	url = https://gitlab.gnome.org/p3732/os-installer.git
