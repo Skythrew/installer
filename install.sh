@@ -98,10 +98,10 @@ echo "configPath = '$PWD/squirrel/dev/etc/squirrel/'" > squirrel/utils/config.py
 echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> squirrel/utils/config.py
 echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> squirrel/utils/config.py
 
-echo "main http://stocklinux.hopto.org:8080/45w22/main" > squirrel/dev/etc/squirrel/branches
-echo "cli http://stocklinux.hopto.org:8080/45w22/cli" >> squirrel/dev/etc/squirrel/branches
-echo "gui http://stocklinux.hopto.org:8080/45w22/gui" >> squirrel/dev/etc/squirrel/branches
-echo "extra http://stocklinux.hopto.org:8080/45w22/extra" >> squirrel/dev/etc/squirrel/branches
+echo "main http://dl.stocklinux.org/dev/main" > squirrel/dev/etc/squirrel/branches
+echo "cli http://dl.stocklinux.org/dev/cli" >> squirrel/dev/etc/squirrel/branches
+echo "gui http://dl.stocklinux.org/dev/gui" >> squirrel/dev/etc/squirrel/branches
+echo "extra http://dl.stocklinux.org/dev/extra" >> squirrel/dev/etc/squirrel/branches
 
 touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
 
@@ -172,10 +172,10 @@ if [ -h $LFS/dev/shm ]; then
 fi
 
 mkdir -p $LFS/etc/squirrel
-echo "main http://stocklinux.hopto.org:8080/45w22/main" > $LFS/etc/squirrel/branches
-echo "gui http://stocklinux.hopto.org:8080/45w22/gui" >> $LFS/etc/squirrel/branches
-echo "extra http://stocklinux.hopto.org:8080/45w22/extra" >> $LFS/etc/squirrel/branches
-echo "cli http://stocklinux.hopto.org:8080/45w22/cli" >> $LFS/etc/squirrel/branches
+echo "main http://dl.stocklinux.org/dev/main" > $LFS/etc/squirrel/branches
+echo "gui http://dl.stocklinux.org/dev/gui" >> $LFS/etc/squirrel/branches
+echo "extra http://dl.stocklinux.org/dev/extra" >> $LFS/etc/squirrel/branches
+echo "cli http://dl.stocklinux.org/dev/cli" >> $LFS/etc/squirrel/branches
 
 # Chroot in the system
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
