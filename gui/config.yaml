@@ -77,23 +77,21 @@ additional_software:
     - package        : 'firefox'
       suggested      : yes
       name           : 'Firefox'
-      name_de        : 'Firefox'
       description    : 'Popular Web Browser from Mozilla'
-      description_de : 'Beliebter Internet-Browser von Mozilla'
+      description_fr : 'Navigateur web populaire de Mozilla'
       icon_path      : '/etc/os-installer/icons/firefox.png'
-    - package        : 'nautilus'
+    - package        : 'hyprland'
       suggested      : yes
-      name           : 'Files'
-      name_de        : 'Dateien'
-      description    : 'Access and organize files'
-      description_de : 'Auf Dateien zugreifen und diese organisieren'
-      icon_path      : '/etc/os-installer/icons/nautilus.svg'
-    - package        : 'some-backend'
-      name           : 'Iconless Backend Functionality'
-    - package        : 'japanese-input-program'
+      name           : 'Hyprland'
+      description    : 'Hyprland is a dynamic tiling Wayland compositor that doesn't sacrifice on its looks'
+      description_fr : 'Hyprland est un gestionnaire de fenêtres en tuile basé sur Wayland qui ne sacrifie pas l'esthétique'
+      icon_path      : '/etc/os-installer/icons/hyprland.png'
+    - package        : 'gnome'
       suggested      : yes
-      name_jp        : '入力プログラム'
-      icon_path      : '/etc/os-installer/icons/jp-symbol.svg'
+      name           : 'Gnome'
+      description    : 'Simple and easy to use Desktop Environnement'
+      description_fr : 'Environnement de bureau simple et facile d'utilisation'
+      icon_path      : '/etc/os-installer/icons/gnome.png'
 
 # List of features that can additionally be selected. Very similar
 # to `additional_software`, but meant for more generic features. Can
