@@ -122,25 +122,23 @@ squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc fle
 pwconv
 grpconv
 EOF
-read -p "What is the name of the user ? " USERNAME
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
-chown -R $USERNAME:$USERNAME /home/$USERNAME
+useradd -m -G users,wheel,audio,video,sudo -s /bin/bash $OSI_USER_NAME
+chown -R $OSI_USER_NAME:$OSI_USER_NAME /home/$OSI_USER_NAME
 EOF
 
-create_passwd $USERNAME
-verify_password_concordance
-
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo -e "$PASSWD\n$PASSWD" | passwd $USERNAME
+echo -e "$OSI_USER_PASSWORD\n$OSI_USER_PASSWORD" | passwd $OSI_USER_NAME
 EOF
 
-create_passwd "root"
-verify_password_concordance
+# No root password provided in os-installer
+# create_passwd "root"
+# verify_password_concordance
 
-cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-echo -e "$PASSWD\n$PASSWD" | passwd root
+# cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+# echo -e "$PASSWD\n$PASSWD" | passwd root
+
 cd /boot
 dracut --kver=\$(ls /lib/modules)
 mv initramfs* initramfs-\$(ls /lib/modules)-stocklinux.img
@@ -203,15 +201,16 @@ PRETTY_NAME="Stock Linux rolling"
 VERSION_CODENAME="rolling"
 EOF
 
-while  [ $IS_HOSTNAME_VALID = 0 ]; do
-  read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
-  test_if_hostname_is_valid
-  if [ $IS_HOSTNAME_VALID = 0 ]; then
-    echo "${COLOR_YELLOW}Hostname : $CHROOT_HOSTNAME is not valid. Try again.${COLOR_RESET}"
-  fi
-done
+# No hostname provided by os-installer
+# while  [ $IS_HOSTNAME_VALID = 0 ]; do
+#   read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
+#   test_if_hostname_is_valid
+#   if [ $IS_HOSTNAME_VALID = 0 ]; then
+#     echo "${COLOR_YELLOW}Hostname : $CHROOT_HOSTNAME is not valid. Try again.${COLOR_RESET}"
+#   fi
+# done
 
-echo $CHROOT_HOSTNAME > $LFS/etc/hostname
+echo "stocklinux" > $LFS/etc/hostname
 
 cat > $LFS/etc/shells << "EOF"
 /bin/sh
