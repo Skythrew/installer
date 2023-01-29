@@ -84,26 +84,20 @@ echo """${COLOR_YELLOW}Dragons ahead !
 This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
-echo "Installing squirrel on the host system..."
-git clone --branch 1.0.2 https://github.com/stock-linux/squirrel.git
-ln -s $PWD/squirrel/squirrel /bin/squirrel
+echo "Installing evox on the host system..."
+wget https://github.com/stock-linux/evox/archive/35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gzip
+tar -xf 35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gz
+ln -s evox-35310b5f341eaba4f3f315017f7ca5585ee95c1d evox
+ln -s $PWD/evox/evox /bin/evox
 
-echo -e "#!/bin/sh\npython3 $PWD/squirrel/main.py \$@" > squirrel/squirrel
-chmod +x squirrel/squirrel
-pip3 install docopt pyaml requests packaging
+echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox
+chmod +x evox/evox
+pip3 install -r evox/requirements.txt
 
-mkdir -p $PWD/squirrel/dev/etc/squirrel/ $PWD/squirrel/dev/var/squirrel/repos/dist/ $PWD/squirrel/dev/var/squirrel/repos/local/ $PWD/squirrel/dev/var/squirrel/repos/local/main/
-
-echo "configPath = '$PWD/squirrel/dev/etc/squirrel/'" > squirrel/utils/config.py
-echo "distPath = '$PWD/squirrel/dev/var/squirrel/repos/dist/'" >> squirrel/utils/config.py
-echo "localPath = '$PWD/squirrel/dev/var/squirrel/repos/local/'" >> squirrel/utils/config.py
-
-echo "main http://dl.stocklinux.org/dev/main" > squirrel/dev/etc/squirrel/branches
-echo "cli http://dl.stocklinux.org/dev/cli" >> squirrel/dev/etc/squirrel/branches
-echo "gui http://dl.stocklinux.org/dev/gui" >> squirrel/dev/etc/squirrel/branches
-echo "extra http://dl.stocklinux.org/dev/extra" >> squirrel/dev/etc/squirrel/branches
-
-touch $PWD/squirrel/dev/var/squirrel/repos/local/main/INDEX
+# Create the basic /etc/evox.conf
+echo "Creating the basic evox.conf..."
+touch /etc/evox.conf
+echo "REPO base https://packages.stocklinux.org/base" >> /etc/evox.conf
 
 echo "Everything is configured !"
 
@@ -126,9 +120,13 @@ mount /dev/$ROOT_PARTITION /mnt
 export LFS="/mnt"
 cd $LFS
 
-# Create the distro structure
-touch $LFS/INDEX
+# Init evox
+ROOT=$LFS evox init
 
+# Sync evox
+ROOT=$LFS evox sync
+
+# Create the distro structure
 mkdir -p $LFS/dev/pts
 mkdir -p $LFS/proc
 mkdir -p $LFS/sys
@@ -147,8 +145,34 @@ mkdir -p $LFS/boot
 ln -s usr/bin $LFS/bin
 ln -s usr/lib $LFS/lib
 ln -s usr/sbin $LFS/sbin
-ln -s usr/lib $LFS/lib64
-ln -s lib $LFS/usr/lib64
+mkdir -p $LFS/lib64
+mkdir -p $LFS/usr/lib32
+ln -s usr/lib32 $LFS/lib32
+
+mkdir -p $PKG/{home,mnt,opt,srv}
+mkdir -p $PKG/etc/{opt,sysconfig}
+mkdir -p $PKG/lib/firmware
+mkdir -p $PKG/media/{floppy,cdrom}
+mkdir -p $PKG/usr/{,local/}{include,src}
+mkdir -p $PKG/usr/local/{bin,lib,sbin}
+mkdir -p $PKG/usr/{,local/}share/{color,dict,doc,info,locale,man}
+mkdir -p $PKG/usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -p $PKG/usr/{,local/}share/man/man{1..8}
+mkdir -p $PKG/var/{cache,local,log,mail,opt,spool}
+mkdir -p $PKG/var/lib/{color,misc,locate}
+
+ln -sfv ../run $PKG/var/run
+ln -sfv ../run/lock $PKG/var/lock
+
+install -dv -m 0750 $PKG/root
+install -dv -m 1777 $PKG/tmp $PKG/var/tmp
+
+ln -sv ../proc/self/mounts $PKG/etc/mtab
+
+touch $PKG/var/log/{btmp,lastlog,faillog,wtmp}
+chgrp -v utmp $PKG/var/log/lastlog
+chmod -v 664  $PKG/var/log/lastlog
+chmod -v 600  $PKG/var/log/btmp
 
 
 # Create the DNS configuration
@@ -156,7 +180,7 @@ echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
 echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
 echo "Installing a basic system to chroot into..."
-ROOT=$LFS squirrel get binutils linux-api-headers glibc gcc-lib-c++ m4 ncurses bash coreutils diffutils file findutils gawk grep gzip sed tar xz gettext perl python3 texinfo util-linux squirrel --chroot=$LFS -y 
+ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs kernel linux-firmware dracut -y 
 
 echo "Installing the system, it can take a while !"
 
@@ -170,35 +194,6 @@ mount -vt tmpfs tmpfs $LFS/run
 if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
-
-mkdir -p $LFS/etc/squirrel
-echo "main http://dl.stocklinux.org/dev/main" > $LFS/etc/squirrel/branches
-echo "gui http://dl.stocklinux.org/dev/gui" >> $LFS/etc/squirrel/branches
-echo "extra http://dl.stocklinux.org/dev/extra" >> $LFS/etc/squirrel/branches
-echo "cli http://dl.stocklinux.org/dev/cli" >> $LFS/etc/squirrel/branches
-
-# Chroot in the system
-cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-mkdir -p /{home,mnt,opt,srv}
-mkdir -pv /etc/{opt,sysconfig}
-mkdir -pv /lib/firmware
-mkdir -pv /media/{floppy,cdrom}
-mkdir -pv /usr/{,local/}{include,src}
-mkdir -pv /usr/local/{bin,lib,sbin}
-mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
-mkdir -pv /usr/{,local/}share/{misc,terminfo,zoneinfo}
-mkdir -pv /usr/{,local/}share/man/man{1..8}
-mkdir -pv /var/{cache,local,log,mail,opt,spool}
-mkdir -pv /var/lib/{color,misc,locate}
-
-ln -sfv /run /var/run
-ln -sfv /run/lock /var/lock
-
-install -dv -m 0750 /root
-install -dv -m 1777 /tmp /var/tmp
-
-ln -sv /proc/self/mounts /etc/mtab
-EOF
 
 cat > $LFS/etc/hosts << EOF
 127.0.0.1  localhost stocklinux
@@ -260,15 +255,15 @@ nogroup:x:65534:
 EOF
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-touch /var/log/{btmp,lastlog,faillog,wtmp}
-chgrp -v utmp /var/log/lastlog
-chmod -v 664  /var/log/lastlog
-chmod -v 600  /var/log/btmp
-mkdir -p /var/squirrel/repos/{local,dist}
-squirrel get man-pages iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu binutils libgmp libmpfr libmpc attr acl libcap shadow ncurses sed psmisc gettext grep bash libtool gdbm gperf expat inetutils less perl xmlparser intltool openssl kmod libelf python3 wheel coreutils check diffutils gawk findutils groff gzip iproute2 kbd libpipeline tar texinfo vim markupsafe jinja2 systemd dbus man-db procps util-linux e2fsprogs gcc tzdata linux linux-firmware dhcpcd dracut wpasupplicant grub -y
+systemd-machine-id-setup
+systemctl preset-all
+systemctl disable systemd-networkd
+systemctl disable systemd-sysupdate
+
 pwconv
 grpconv
 EOF
+
 read -p "What is the name of the user ? " USERNAME
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
@@ -335,19 +330,12 @@ set bell-style none
 "\e[F": end-of-line
 EOF
 
-cat > $LFS/etc/lsb-release << "EOF"
-DISTRIB_ID="Stock Linux"
-DISTRIB_RELEASE="rolling"
-DISTRIB_CODENAME="stocklinux"
-DISTRIB_DESCRIPTION="Stock Linux: The Real Power-User Experience"
-EOF
-
 cat > $LFS/etc/os-release << "EOF"
 NAME="Stock Linux"
-VERSION="rolling"
+VERSION="Sunbird (Alpha)"
 ID=stocklinux
-PRETTY_NAME="Stock Linux rolling"
-VERSION_CODENAME="rolling"
+PRETTY_NAME="Stock Linux Sunbird (Alpha)"
+VERSION_CODENAME="sunbird-alpha"
 EOF
 
 while  [ $IS_HOSTNAME_VALID = 0 ]; do
@@ -364,8 +352,6 @@ cat > $LFS/etc/shells << "EOF"
 /bin/sh
 /bin/bash
 EOF
-
-echo "export \$(dbus-launch)" >> $LFS/etc/profile
 
 UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
 echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
