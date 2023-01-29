@@ -85,9 +85,9 @@ This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
 echo "Installing evox on the host system..."
-wget https://github.com/stock-linux/evox/archive/35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gz
-tar -xf 35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gz
-ln -s evox-35310b5f341eaba4f3f315017f7ca5585ee95c1d evox
+wget https://github.com/stock-linux/evox/archive/355df8f9f7ff2e0f789028650d6f6363d4c4579e.tar.gz
+tar -xf 355df8f9f7ff2e0f789028650d6f6363d4c4579e.tar.gz
+ln -s evox-355df8f9f7ff2e0f789028650d6f6363d4c4579e evox
 ln -s $PWD/evox/evox-x /bin/evox
 
 echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox-x
