@@ -258,6 +258,7 @@ python3 /usr/lib/evox/evox/main.py "$@"
 EOF
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+ln -s bash /bin/sh
 chmod +x /usr/bin/evox
 
 install -dv -m 0750 /root
