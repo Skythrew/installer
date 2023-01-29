@@ -180,7 +180,7 @@ echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
 echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
 echo "Installing a basic system to chroot into..."
-ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs kernel linux-firmware dracut -y 
+ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs kernel linux-firmware dracut evox -y 
 
 echo "Installing the system, it can take a while !"
 
@@ -254,12 +254,20 @@ users:x:999:
 nogroup:x:65534:
 EOF
 
+cat > $LFS/usr/bin/evox << "EOF"
+#!/bin/bash
+python3 /usr/lib/evox/evox/main.py "$@"
+EOF
+
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+chmod +x /usr/bin/evox
+
 systemd-machine-id-setup
 systemctl preset-all
 systemctl disable systemd-networkd
 systemctl disable systemd-sysupdate
 
+pip3 install -r /usr/lib/evox/requirements.txt
 pwconv
 grpconv
 
