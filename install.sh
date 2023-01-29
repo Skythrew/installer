@@ -85,9 +85,9 @@ This script is still in developpement, use it with precautions !
 We are not responsable for enything that can appears pending the installation (data loss, break computer, burning house, WWIII, etc)${COLOR_RESET}"""
 
 echo "Installing evox on the host system..."
-wget https://github.com/stock-linux/evox/archive/355df8f9f7ff2e0f789028650d6f6363d4c4579e.tar.gz
-tar -xf 355df8f9f7ff2e0f789028650d6f6363d4c4579e.tar.gz
-ln -s evox-355df8f9f7ff2e0f789028650d6f6363d4c4579e evox
+wget https://github.com/stock-linux/evox/archive/main.tar.gz
+tar -xf main.tar.gz
+ln -s evox-main evox
 ln -s $PWD/evox/evox-x /bin/evox
 
 echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox-x
@@ -141,6 +141,7 @@ mkdir -p $LFS/usr/share
 mkdir -p $LFS/usr/include
 mkdir -p $LFS/usr/libexec
 mkdir -p $LFS/boot
+mkdir -p $LFS/mnt
 
 ln -s usr/bin $LFS/bin
 ln -s usr/lib $LFS/lib
@@ -163,9 +164,6 @@ mkdir -p $PKG/var/lib/{color,misc,locate}
 
 ln -sfv ../run $PKG/var/run
 ln -sfv ../run/lock $PKG/var/lock
-
-install -dv -m 0750 $PKG/root
-install -dv -m 1777 $PKG/tmp $PKG/var/tmp
 
 ln -sv ../proc/self/mounts $PKG/etc/mtab
 
@@ -262,6 +260,9 @@ EOF
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 chmod +x /usr/bin/evox
 
+install -dv -m 0750 /root
+install -dv -m 1777 /tmp /var/tmp
+
 systemd-machine-id-setup
 systemctl preset-all
 systemctl disable systemd-networkd
@@ -272,7 +273,7 @@ pwconv
 grpconv
 
 for target in depmod insmod modinfo modprobe rmmod; do
-  ln -sf ../bin/kmod /usr/sbin/$target
+  ln -sf ../bin/kmod /usr/sbin/\$target
 done
 
 ln -sfv kmod /usr/bin/lsmod
