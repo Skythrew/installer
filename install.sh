@@ -88,10 +88,10 @@ echo "Installing evox on the host system..."
 wget https://github.com/stock-linux/evox/archive/35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gz
 tar -xf 35310b5f341eaba4f3f315017f7ca5585ee95c1d.tar.gz
 ln -s evox-35310b5f341eaba4f3f315017f7ca5585ee95c1d evox
-ln -s $PWD/evox/evox /bin/evox
+ln -s $PWD/evox/evox-x /bin/evox
 
-echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox
-chmod +x evox/evox
+echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox-x
+chmod +x evox/evox-x
 pip3 install -r evox/requirements.txt
 
 # Create the basic /etc/evox.conf
