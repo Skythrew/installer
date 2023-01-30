@@ -273,12 +273,6 @@ pip3 install -r /usr/lib/evox/requirements.txt
 pwconv
 grpconv
 
-for target in depmod insmod modinfo modprobe rmmod; do
-  ln -sf ../bin/kmod /usr/sbin/\$target
-done
-
-ln -sfv kmod /usr/bin/lsmod
-
 EOF
 
 read -p "What is the name of the user ? " USERNAME
