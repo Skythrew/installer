@@ -302,7 +302,7 @@ cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chr
 echo -e "$PASSWD\n$PASSWD" | passwd root
 cd /boot
 dracut --kver=\$(ls /lib/modules)
-mv initramfs* initramfs-\$(ls /lib/modules)-stocklinux.img
+mv initramfs* initramfs-\$(ls /lib/modules)-stock.img
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
 grub-mkconfig -o /boot/grub/grub.cfg
