@@ -299,7 +299,6 @@ dracut --kver=\$(ls /lib/modules)
 mv initramfs* initramfs-\$(ls /lib/modules)-stock.img
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
-grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
 # ls /usr/share/zoneinfo/
@@ -347,6 +346,10 @@ VERSION="Sunbird (Alpha)"
 ID=stocklinux
 PRETTY_NAME="Stock Linux Sunbird (Alpha)"
 VERSION_CODENAME="sunbird-alpha"
+EOF
+
+cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
 while  [ $IS_HOSTNAME_VALID = 0 ]; do
