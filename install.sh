@@ -150,27 +150,27 @@ mkdir -p $LFS/lib64
 mkdir -p $LFS/usr/lib32
 ln -s usr/lib32 $LFS/lib32
 
-mkdir -p $PKG/{home,mnt,opt,srv}
-mkdir -p $PKG/etc/{opt,sysconfig}
-mkdir -p $PKG/lib/firmware
-mkdir -p $PKG/media/{floppy,cdrom}
-mkdir -p $PKG/usr/{,local/}{include,src}
-mkdir -p $PKG/usr/local/{bin,lib,sbin}
-mkdir -p $PKG/usr/{,local/}share/{color,dict,doc,info,locale,man}
-mkdir -p $PKG/usr/{,local/}share/{misc,terminfo,zoneinfo}
-mkdir -p $PKG/usr/{,local/}share/man/man{1..8}
-mkdir -p $PKG/var/{cache,local,log,mail,opt,spool}
-mkdir -p $PKG/var/lib/{color,misc,locate}
+mkdir -p $LFS/{home,mnt,opt,srv}
+mkdir -p $LFS/etc/{opt,sysconfig}
+mkdir -p $LFS/lib/firmware
+mkdir -p $LFS/media/{floppy,cdrom}
+mkdir -p $LFS/usr/{,local/}{include,src}
+mkdir -p $LFS/usr/local/{bin,lib,sbin}
+mkdir -p $LFS/usr/{,local/}share/{color,dict,doc,info,locale,man}
+mkdir -p $LFS/usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -p $LFS/usr/{,local/}share/man/man{1..8}
+mkdir -p $LFS/var/{cache,local,log,mail,opt,spool}
+mkdir -p $LFS/var/lib/{color,misc,locate}
 
-ln -sfv ../run $PKG/var/run
-ln -sfv ../run/lock $PKG/var/lock
+ln -sfv ../run $LFS/var/run
+ln -sfv ../run/lock $LFS/var/lock
 
-ln -sv ../proc/self/mounts $PKG/etc/mtab
+ln -sv ../proc/self/mounts $LFS/etc/mtab
 
-touch $PKG/var/log/{btmp,lastlog,faillog,wtmp}
-chgrp -v utmp $PKG/var/log/lastlog
-chmod -v 664  $PKG/var/log/lastlog
-chmod -v 600  $PKG/var/log/btmp
+touch $LFS/var/log/{btmp,lastlog,faillog,wtmp}
+chgrp -v utmp $LFS/var/log/lastlog
+chmod -v 664  $LFS/var/log/lastlog
+chmod -v 600  $LFS/var/log/btmp
 
 
 # Create the DNS configuration
