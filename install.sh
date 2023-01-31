@@ -178,7 +178,7 @@ echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
 echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
 echo "Installing a basic system to chroot into..."
-ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs kernel linux-firmware dracut evox -y 
+ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs dhcpcd wpa_supplicant kernel linux-firmware dracut evox -y 
 
 echo "Installing the system, it can take a while !"
 
