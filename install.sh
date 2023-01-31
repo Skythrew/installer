@@ -101,24 +101,34 @@ echo "REPO base http://packages.stocklinux.org/base" >> /etc/evox.conf
 
 echo "Everything is configured !"
 
-echo "Disks:"
-lsblk -d -o NAME,SIZE
-echo "\n"
+# If the argument --folder is present, the script will install the OS in the folder
+# given in argument
 
-read -p "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
+# We check if the argument --folder is present
+if [ "$1" == "--folder" ]; then
+  # We check if the folder given in argument exists
+  if [ -d "$2" ]; then
+    export LFS="$2"
+  fi
+else
+  echo "Disks:"
+  lsblk -d -o NAME,SIZE
+  echo "\n"
 
-echo "Stock Linux will be installed in $DISK_TO_INTALL. Ctrl+C to quit."
-cfdisk /dev/$DISK_TO_INSTALL
-read -p "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
-read -p "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
+  read -p "On wich disk do you want to install the OS ? (ex: sda) " DISK_TO_INSTALL
 
-mkfs.ext4 /dev/$ROOT_PARTITION
-mkfs.fat -F 32 /dev/$UEFI_PARTITION
+  echo "Stock Linux will be installed in $DISK_TO_INTALL. Ctrl+C to quit."
+  cfdisk /dev/$DISK_TO_INSTALL
+  read -p "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
+  read -p "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
 
-mount /dev/$ROOT_PARTITION /mnt
+  mkfs.ext4 /dev/$ROOT_PARTITION
+  mkfs.fat -F 32 /dev/$UEFI_PARTITION
 
-export LFS="/mnt"
-cd $LFS
+  mount /dev/$ROOT_PARTITION /mnt
+
+  export LFS="/mnt"
+fi
 
 # Init evox
 ROOT=$LFS evox init
@@ -177,6 +187,7 @@ chmod -v 600  $LFS/var/log/btmp
 echo "nameserver 8.8.8.8" > $LFS/etc/resolv.conf
 echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
+cd $LFS
 echo "Installing a basic system to chroot into..."
 ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs dhcpcd wpa_supplicant kernel linux-firmware dracut evox -y 
 
@@ -297,9 +308,14 @@ echo -e "$PASSWD\n$PASSWD" | passwd root
 cd /boot
 dracut --kver=\$(ls /lib/modules)
 mv initramfs* initramfs-\$(ls /lib/modules)-stock.img
+EOF
+
+if [ -z "$1" ]; then
+  cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 mount /dev/$UEFI_PARTITION /mnt
 grub-install --target=x86_64-efi --efi-directory=/mnt
 EOF
+fi
 
 # ls /usr/share/zoneinfo/
 TZ_CONTINENT=Europe
@@ -348,9 +364,11 @@ PRETTY_NAME="Stock Linux Sunbird (Alpha)"
 VERSION_CODENAME="sunbird-alpha"
 EOF
 
-cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
+if [ -z "$1" ]; then
+  cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
+fi
 
 while  [ $IS_HOSTNAME_VALID = 0 ]; do
   read -p "Choose your hostname (only A-B, a-b, 0-9, -) " CHROOT_HOSTNAME
@@ -367,13 +385,16 @@ cat > $LFS/etc/shells << "EOF"
 /bin/bash
 EOF
 
-UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
-echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
-UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
-echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
+# Check if the argument --folder is not present (if there are no arguments)
+if [ -z "$1" ]; then
+  UUID="$(blkid /dev/$ROOT_PARTITION -o value -s UUID)"
+  echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
+  UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
+  echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
 
-umount -R /dev/$ROOT_PARTITION
+  umount -R /dev/$ROOT_PARTITION
 
-read -p "Installation finished ! Press [Enter] to reboot"
+  read -p "Installation finished ! Press [Enter] to reboot"
 
-shutdown -r now
+  shutdown -r now
+fi
