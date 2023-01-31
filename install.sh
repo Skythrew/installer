@@ -97,7 +97,7 @@ pip3 install -r evox/requirements.txt
 # Create the basic /etc/evox.conf
 echo "Creating the basic evox.conf..."
 touch /etc/evox.conf
-echo "REPO base https://packages.stocklinux.org/base" >> /etc/evox.conf
+echo "REPO base http://packages.stocklinux.org/base" >> /etc/evox.conf
 
 echo "Everything is configured !"
 
