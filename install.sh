@@ -92,7 +92,7 @@ ln -s $PWD/evox/evox-x /bin/evox
 
 echo -e "#!/bin/sh\npython3 $PWD/evox/evox/main.py \"\$@\"" > evox/evox-x
 chmod +x evox/evox-x
-pip3 install -r evox/requirements.txt
+pip install -r evox/requirements.txt
 
 # Create the basic /etc/evox.conf
 echo "Creating the basic evox.conf..."
