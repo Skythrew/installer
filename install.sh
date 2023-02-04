@@ -108,7 +108,7 @@ echo "Everything is configured !"
 if [ "$1" == "--folder" ]; then
   # We check if the folder given in argument exists
   if [ -d "$2" ]; then
-    export LFS="$2"
+    export LFS=$(realpath "$2")
   fi
 else
   echo "Disks:"
