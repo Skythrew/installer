@@ -45,6 +45,7 @@ C_RESET=$'\e[0m'
 VALID_HOSTNAME_REGEX="^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$"
 
 IS_HOSTNAME_VALID=0
+SWAP_CREATION=0
 
 test_if_hostname_is_valid()
 {
@@ -98,7 +99,8 @@ pip install -r evox/requirements.txt
 echo "Creating the basic evox.conf..."
 touch /etc/evox.conf
 echo "REPO base http://packages.stocklinux.org/base" >> /etc/evox.conf
-
+echo "REPO cli http://packages.stocklinux.org/cli" >> /etc/evox.conf
+echo "REPO gui http://packages.stocklinux.org/gui" >> /etc/evox.conf
 echo "Everything is configured !"
 
 # If the argument --folder is present, the script will install the OS in the folder
@@ -121,7 +123,13 @@ else
   cfdisk /dev/$DISK_TO_INSTALL
   read -p "What is the name of the root partition ? (ex: sda2) " ROOT_PARTITION
   read -p "What is the name of the EFI partition ? (ex: sda1) " UEFI_PARTITION
-
+  echo "Did you create a SWAP partition? (y/n)"
+  read answer 
+  if [ "$answer" = "y" ]; then
+    read -p "What is the name of the SWAP partition? (ex: sda3) " SWAP_PARTITION
+    SWAP_CREATION=1
+    mkswap /dev/$SWAP_PARTITION
+  fi
   mkfs.ext4 /dev/$ROOT_PARTITION
   mkfs.fat -F 32 /dev/$UEFI_PARTITION
 
@@ -189,7 +197,7 @@ echo "nameserver 8.8.4.4" >> $LFS/etc/resolv.conf
 
 cd $LFS
 echo "Installing a basic system to chroot into..."
-ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs dhcpcd wpa_supplicant kernel linux-firmware dracut evox -y 
+ROOT=$LFS evox get iana-etc glibc zlib bzip2 xz zstd file readline m4 bc flex tcl expect dejagnu gmp mpfr mpc attr acl libcap shadow gcc ncurses sed psmisc gettext bison grep bash libtool gperf expat inetutils less perl perl-xmlparser intltool openssl kmod libelf libffi python python-wheel coreutils check diffutils findutils grub gzip iproute2 kbd libpipeline tar vim python-markupsafe python-jinja systemd dbus procps-ng util-linux e2fsprogs dhcpcd wpa_supplicant kernel linux-firmware dracut evox xorg -y 
 
 echo "Installing the system, it can take a while !"
 
@@ -289,7 +297,7 @@ EOF
 read -p "What is the name of the user ? " USERNAME
 
 cat << EOF | chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login
-useradd -m -G users,wheel,audio,video -s /bin/bash $USERNAME
+useradd -m -G input,usb,users,wheel,audio,video -s /bin/bash $USERNAME
 chown -R $USERNAME:$USERNAME /home/$USERNAME
 EOF
 
@@ -391,10 +399,13 @@ if [ -z "$1" ]; then
   echo "UUID=$UUID    /    ext4    defaults,noatime           0 1" >> $LFS/etc/fstab
   UUID="$(blkid /dev/$UEFI_PARTITION -o value -s UUID)"
   echo "UUID=$UUID    /boot/EFI    vfat    defaults    0 0" >> $LFS/etc/fstab
+  if [ $SWAP_CREATION = 1 ]; then
+    UUID="$(blkid /dev/$SWAP_PARTITION -o value -s UUID)"
+    echo "UUID=$UUID    swap    swap    defaults    0 0" >> $LFS/etc/fstab
+  fi
 
   umount -R /dev/$ROOT_PARTITION
 
-  read -p "Installation finished ! Press [Enter] to reboot"
+  read -p "Installation finished ! Enjoy "
 
-  shutdown -r now
 fi
